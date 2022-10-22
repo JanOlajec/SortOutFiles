@@ -48,7 +48,20 @@ namespace SortOutFiles
             {
                 string dateTaken = this.GetDateTaken(oneFilePath);
 
-                string folderName = FolderNameBasedOnDate(dateTaken);
+                string folderName;
+
+                if (dateTaken == null)
+                {
+                    // DateTake do not exist in file. Use create date instead.
+                    dateTaken = GetCreationDate(oneFilePath);
+                    folderName = FolderNameBasedOnDate(dateTaken);
+                    folderName = Path.Combine("NoDateTaken", folderName);
+
+                }
+                else
+                {
+                    folderName = FolderNameBasedOnDate(dateTaken);
+                }
 
                 this.PictureFileCopy(oneFilePath, folderName);
             }
@@ -95,6 +108,13 @@ namespace SortOutFiles
             BitmapMetadata imageMetaData = (BitmapMetadata)imgeSource.Metadata;
             var dateTaken = imageMetaData.DateTaken;
             return dateTaken;
+        }
+
+        private string GetCreationDate(string path)
+        {
+            FileInfo fileInformation = new FileInfo(path);
+            var creationDate = fileInformation.CreationTime.ToString();
+            return creationDate;
         }
 
         /// <summary>

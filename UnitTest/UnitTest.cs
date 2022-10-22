@@ -19,6 +19,8 @@ namespace UnitTest
         private const string FILE3 = "SNY09361.jpg";
         private const string FILE4 = "SNY09448.jpg";
         private const string FILE5 = "SNY09493.jpg";
+        private const string FILE6 = "PLAG0001.jpg";
+        private const string FILE7 = "RAM00001.jpg";
 
         /// <summary>
         /// Expected destination folder name after sorting based on DateTaken
@@ -28,6 +30,8 @@ namespace UnitTest
         private const string SORT_OUT_FOLDER3 = "2022.08.26";
         private const string SORT_OUT_FOLDER4 = "2022.08.29";
         private const string SORT_OUT_FOLDER5 = "2022.08.31";
+        private const string SORT_OUT_FOLDER6 = @"NoDateTaken\2022.10.03";
+        private const string SORT_OUT_FOLDER7 = @"NoDateTaken\2022.10.03";
 
         /// <summary>
         /// All destination folders created as result of sort out process
@@ -37,19 +41,23 @@ namespace UnitTest
                 SORT_OUT_FOLDER2,
                 SORT_OUT_FOLDER3,
                 SORT_OUT_FOLDER4,
-                SORT_OUT_FOLDER5
+                SORT_OUT_FOLDER5,
+                SORT_OUT_FOLDER6,
+             /* SORT_OUT_FOLDER7, is the same name as SORT_OUT_FOLDER6 */
             };
 
         /// <summary>
-        /// Destination folder name with specific file present in the folder
+        /// Specific file present in the destination folder name
         /// </summary>
         private readonly Dictionary<string, string> sortOutData = new Dictionary<string, string>
         {
-            { SORT_OUT_FOLDER1, FILE1 },
-            { SORT_OUT_FOLDER2, FILE2 },
-            { SORT_OUT_FOLDER3, FILE3 },
-            { SORT_OUT_FOLDER4, FILE4 },
-            { SORT_OUT_FOLDER5, FILE5 }
+            { FILE1, SORT_OUT_FOLDER1},
+            { FILE2, SORT_OUT_FOLDER2},
+            { FILE3, SORT_OUT_FOLDER3},
+            { FILE4, SORT_OUT_FOLDER4},
+            { FILE5, SORT_OUT_FOLDER5},
+            { FILE6, SORT_OUT_FOLDER6},
+            { FILE7, SORT_OUT_FOLDER7},
         };
 
         /// <summary>
@@ -77,8 +85,8 @@ namespace UnitTest
 
             foreach (var item in sortOutData)
             {
-                string folderPath = Path.Combine(Common.GetOutputPath(), item.Key);
-                result.Add(Path.Combine(folderPath, item.Value));
+                string folderPath = Path.Combine(Common.GetOutputPath(), item.Value);
+                result.Add(Path.Combine(folderPath, item.Key));
             }
 
             return result;
@@ -121,6 +129,7 @@ namespace UnitTest
             }
         }
 
+        //TODO files without TakenDate - file RAM00001.jpg is not correctly sorted out. I cant get "Modified date" from properties which correspond with date of file creation
         //TODO not valid path
         //TODO destination not possible to create ???
         //TODO empty source folder
