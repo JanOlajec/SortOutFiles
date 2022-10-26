@@ -38,6 +38,21 @@ namespace UnitTest
             return Path.Combine(GetTestDataPath(), "Photos");
         }
 
+        public static string GetPhotosWorkingPath()
+        {
+            return Path.Combine(GetTestDataPath(), "PhotosWorking");
+        }
+
+        public static string GetEmptyFolderPath()
+        {
+            return Path.Combine(GetTestDataPath(), "EmptyFolder");
+        }
+
+        public static string GetMixedFileTypes()
+        {
+            return Path.Combine(GetTestDataPath(), "MixedFileTypes");
+        }
+
         public static string GetOutputPath()
         {
             return Path.Combine(GetTestDataPath(), "Output");

@@ -66,12 +66,12 @@ namespace SortOutFiles
             {
                 if (String.IsNullOrEmpty(args[0]))
                 {
-                    Console.WriteLine("Source path is empty");
+                    Console.WriteLine("Source path is not provided");
                     PrintPleaseProvidePaths();
                 }
                 else if (String.IsNullOrEmpty(args[1]))
                 {
-                    Console.WriteLine("Destination path is empty");
+                    Console.WriteLine("Destination path is not provided");
                     PrintPleaseProvidePaths();
                 }
                 Environment.Exit(-1);
@@ -86,7 +86,9 @@ namespace SortOutFiles
 
         private static void PrintPleaseProvidePaths()
         {
-            Console.WriteLine("Please provide source and destination path");
+            Console.WriteLine("Please provide valid source and destination path.");
+            Console.WriteLine("EXAMPLE:");
+            Console.WriteLine(@"SortOutFiles.exe c:\Temp\Picture c:\Temp\PictureOut");
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SortOutFiles
 {
@@ -44,6 +45,11 @@ namespace SortOutFiles
 
             string[] allFilesPaths = Directory.GetFiles(this.sourcePath);
 
+            if(allFilesPaths.Length == 0)
+            {
+                throw new ArgumentException("Source path is empty. There are no JPG files for sorting", sourcePath);
+            }
+
             foreach (var oneFilePath in allFilesPaths)
             {
                 string dateTaken = this.GetDateTaken(oneFilePath);
@@ -56,7 +62,6 @@ namespace SortOutFiles
                     dateTaken = GetCreationDate(oneFilePath);
                     folderName = FolderNameBasedOnDate(dateTaken);
                     folderName = Path.Combine("NoDateTaken", folderName);
-
                 }
                 else
                 {
@@ -81,7 +86,7 @@ namespace SortOutFiles
         }
 
         /// <summary>
-        /// Path string testing for null, empty and exitence
+        /// Path string testing for null, empty and existence
         /// </summary>
         /// <param name="path"></param>
         /// <exception cref="ArgumentException"></exception>
@@ -102,11 +107,22 @@ namespace SortOutFiles
         /// <returns>Date and time</returns>
         private string GetDateTaken(string path)
         {
+            string dateTaken = null;
             FileInfo fileInformation = new FileInfo(path);
             FileStream fileStream = new FileStream(fileInformation.FullName, FileMode.Open, FileAccess.Read, FileShare.Read);
-            BitmapSource imgeSource = BitmapFrame.Create(fileStream);
-            BitmapMetadata imageMetaData = (BitmapMetadata)imgeSource.Metadata;
-            var dateTaken = imageMetaData.DateTaken;
+            
+            try
+            {
+                // If file format is not supported e.g. TXT, DOC, then exception is throw. If possible creation date is used on upper level.
+                BitmapSource imgeSource = BitmapFrame.Create(fileStream);
+                BitmapMetadata imageMetaData = (BitmapMetadata)imgeSource.Metadata;
+                dateTaken = imageMetaData.DateTaken;
+            }
+            catch (NotSupportedException)
+            {
+                Console.WriteLine($"WARNING: not supported file type: {path}");
+            }
+
             return dateTaken;
         }
 
@@ -145,12 +161,39 @@ namespace SortOutFiles
 
             if (!Directory.Exists(outPath))
             {
+                try
+                {
+                    Directory.CreateDirectory(outPath);
+                }
+                catch (Exception e)
+                {
+                    // If output directory is not created, e.g. due to access rights, it throw 'UnauthorizedAccessException'.
+                    // Try it for next Output directory in the list.
+                    Console.WriteLine($"WARNING: Output folder not created: {outPath}");
+                    Console.WriteLine($"Reason is exception:\n{e.Message}\n");
+                    
+                    // File copy is skipped, simply return.
+                    return;
+                }
+
                 Directory.CreateDirectory(outPath);
             }
 
             string destPath = Path.Combine(outPath, Path.GetFileName(pictureFilePath));
 
-            File.Copy(pictureFilePath, destPath);
+            try
+            {
+                File.Copy(pictureFilePath, destPath);
+            }
+            catch (Exception e)
+            {
+                // If file exist in output folder the System.IO.IOException is throw
+                Console.WriteLine($"WARNING: File is not copied to the destination: {outPath}");
+                Console.WriteLine($"Reason is exception:\n{e.Message}\n");
+
+                // File copy is skipped, simply return.
+                return;
+            }
         }
     }
 }
