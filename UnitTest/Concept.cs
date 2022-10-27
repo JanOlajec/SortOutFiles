@@ -10,7 +10,7 @@ namespace UnitTest
     /// <summary>
     /// Summary description for UnitTest1
     /// </summary>
-    [TestClass]
+    /* [TestClass] - commented because its not needed for UnitTests. It is only concept proof. */
     public class Concept
     {
         /// <summary>

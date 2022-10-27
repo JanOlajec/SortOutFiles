@@ -43,7 +43,10 @@ namespace SortOutFiles
             this.StringTest(destFolderPath);
             this.destPath = destFolderPath;
 
-            string[] allFilesPaths = Directory.GetFiles(this.sourcePath);
+            // OPTIONS1: Only top (defined) folder is processed:
+            //string[] allFilesPaths = Directory.GetFiles(this.sourcePath);
+            // OPTIONS2: Top (defined) folder and sub-folders are processed:
+            string[] allFilesPaths = Directory.GetFiles(this.sourcePath, "*.*", SearchOption.AllDirectories);
 
             if(allFilesPaths.Length == 0)
             {
@@ -61,7 +64,7 @@ namespace SortOutFiles
                     // DateTake do not exist in file. Use create date instead.
                     dateTaken = GetCreationDate(oneFilePath);
                     folderName = FolderNameBasedOnDate(dateTaken);
-                    folderName = Path.Combine("NoDateTaken", folderName);
+                    folderName = Path.Combine("_NoDateTaken", folderName);
                 }
                 else
                 {
